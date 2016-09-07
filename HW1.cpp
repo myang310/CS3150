@@ -1,6 +1,8 @@
 // Write a function that returns the number of zeros in a given simple list of numbers.
 
 int zero_count (std::list<int> list) {
+	// Keep count of the number of zeroes in the list by checking each number in the list
+	// to see if it is zero is not. If so, increment counter. Otherwise, do nothing.
 	int count = 0;
 	for (std::list<int>::iterator iterator = list.begin(); iterator != list.end(); iterator++) {
 		if (*iterator == 0) count++;
@@ -12,6 +14,7 @@ int zero_count (std::list<int> list) {
 // list with the largest and smallest numbers in the given list.
 
 std::list<int> find_largest_smallest (std::list<int> list) {
+	// Run through the list once and keep track of the most current largest and smallest #
 	int largest = list.front();
 	int smallest = list.front();
 	for (std::list<int>::iterator iterator = list.begin() + 1; iterator != list.end(); iterator++) {
@@ -27,7 +30,38 @@ std::list<int> find_largest_smallest (std::list<int> list) {
 // of the Pascal's triangle.
 
 void print_pascal (int n) {
+	// If the given n is not at least 1, then no rows of Pascal's triangle will print
+	if (n >= 1) {
+		std::cout << "1" << std::endl;
 
+		// Chose to use a queue as you determine the numbers of Pascal's triangle
+		// by summing pairs of numbers in the row above. A queue allows for the
+		// previous row of numbers to be summed in order to attain the current row,
+		// and for the current row of numbers to be added to the back of the queue.
+		std::queue<int> queue;
+	} 
+
+	// For each row of Pascal's triangle, print the 1s on the ends and store those
+	// 1s and all the numbers in between in order in the queue. This allows for the
+	// augend to be popped and the addend to be read, but popped in the following
+	// operation.
+	for (int i = 1; i < n; i++) {
+		queue.push(1);
+		std::cout << "1 ";
+
+		// 
+		for (int j = 0; j < i - 2; j++) {
+			int first = queue.pop();
+			int second = queue.front();
+			int sum = a + b;
+			queue.push(sum);
+			std::cout << sum << " ";
+		}
+		queue.pop();
+
+		queue.push(1);
+		std::cout << "1" << std::endl;
+	}
 }
 
 // Arrays: Write a program that tests if a 2D square array is symmetric about the diagonal 
