@@ -1,3 +1,6 @@
+// Ming Yang
+// Assignment # 2 - Review of STL
+
 // Write a function that returns the number of zeros in a given simple list of numbers.
 
 int zero_count (std::list<int> list) {
@@ -66,15 +69,55 @@ void print_pascal (int n) {
 
 // Arrays: Write a program that tests if a 2D square array is symmetric about the diagonal 
 // from (0,0) to (n-1,n-1). (from EPI)
-bool is_diagonal(int (&square)[][n], int n) { 
+bool is_diagonal(int** square, int n) {
+	// Check for equality between the left side of the diagonal and the top side. Check from
+	// left to right on the left side and top to bottom on the top side. If at any point,
+	// there's an inequality, return false. Otherwise, it will return true.
+	for (int i = 1; i < n; i++) {
+		for (int j = 0; j < i; j++) {
+			if (square[i][j] != square[j][i]) 
+				return false;
+		}
+	}
+
+	return true;
 
 }
 
-// Stacks and Queues: Write a programt to evaluate arithmetical expressions that use + and * 
+// Stacks and Queues: Write a program to evaluate arithmetical expressions that use + and * 
 // applied to nonnegative integer arguments. Expressions are in reverse-Polish notation, 
 // e.g., 3 4 + 5 *, 1 3 + 5 7 + *. (from EPI)
-int calculate() {
+int calculate(std::string expression) {
+	// Place the expression into a string stream to separate the expression
+    std::string buffer;
+    std::stringstream ss(expression);
 
+    std::stack<std::string> stack;
+
+    // While strings are being extracted from the stream, check if they are numbers or
+    // operators. If it's a number, add it to the stack. Otherwise, pop the last two
+    // numbers from the stack and perform the appropriate calculation. Then place the
+    // result back into the stack.
+    while (ss >> buf) {
+    	switch(buf) {
+    		case "+":
+    			int a = std::stoi(stack.pop());
+    			int b = std::stoi(stack.pop());
+    			stack.push(std::to_string(a + b));
+    			break;
+    		case "*":
+    			int a = std::stoi(stack.pop());
+    			int b = std::stoi(stack.pop());
+    			stack.push(std::to_string(a * b));
+    			break;
+    		default:
+    			stack.push(buf);
+    			break;
+    	}
+    }
+
+    // The last number in the stack should be the result of the whole expression
+    return std::stoi(stack.pop());
 }
 
 // Hash tables: Write a program that finds the most common object in an array of objects. 
@@ -103,11 +146,68 @@ class pair_strings {
 }
 
 pair_strings find_most_common(pair_strings objects[], int n) {
+	std::unordered_map<pair_strings, int> string_map; // Use a hash table to track frequencies
 
+	// Add each new pair_strings object into the hash table. Set the pair_strings as the key
+	// and 1 as the starting value. Increment it's value if it's already in the hash table.
+	for (int i = 0; i < n; i++) {
+		std::pair<std::iterator, bool> pair = string_map.insert(objects[i], 1);
+		bool not_new = std::get<bool>(pair);
+
+		if (not_new) {
+			string_map.at(objects[i]) += 1;
+		}
+	}
+
+	// Iterate through the hash table and search for the key with the largest value
+	// keeping the largest found thus far in tracking values, max and most_common.
+	int max = 1;
+	pair_strings most_common;
+	for (std::unordered_map<pair_strings, int>::iterator iterator = string_map.begin(); 
+		iterator != string_map.end(); 
+		iterator++) {
+		if (it->second > max) {
+			max = it->second;
+			most_common = it->first;
+		}
+	}
+
+	return most_common;
 }
 
 // Write a program to find the unique positive integer whose square has the form 
 // 1_2_3_4_5_6_7_8_9_0, where each "_" is a single digit. (from Euler)
 int find_unique_square() {
-	
+	// Logic: 
+	// In order to have a 0 as the last digit, the square root has to end in 0
+	// as well, meaning the last two digits are both 0 (1_2_3_4_5_6_7_8_9 left).
+	// In order for the last digit to be 9, the square root of it must be either
+	// 3 or 7 in order to get 9 or 49 as the square.
+	// The number must be between 101,010,101 and 138,902,6623 to cover the range
+	// of possible squares.
+	long long i = 101010103;
+	while (i < 1389026623) {
+		long long square = i * i;
+		int expected = 9; // the current end number to match
+		while (square > 0) {
+			// Check if the last digits match. If not, move on to the next number
+			int digit = (int)(square % 10);
+			if (digit != expected) 
+				break;
+			// Otherwise, try the next number - truncating off the last 2 digits
+			else {
+				square /= 100;
+				expected--;
+			}
+		}
+		// If has found all the necessary digits, return the original number
+		if (expected == 0)
+			return (int) i;
+		// Otherwise, try out the next number ending with a 3 or a 7
+		else {
+			if (i % 10 == 3) 	i += 4; // increments i to end in 7
+			else 				i += 6; // increments i to end in 3
+		}
+	}
+	return -1;
 }
