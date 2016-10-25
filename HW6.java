@@ -52,9 +52,44 @@ public class Sort {
   }
 
   public static void quickSort(Comparable[] arr) {
+    if (arr.length <= 1)
+      return;
 
+    quickSort(arr, 0, arr.length-1);
   }
 
+  private static void quickSort(Comparable[] arr, int beg, int end) {
+    if (beg < end) {
+      Comparable pivot = arr[beg + ((end - beg) / 2)];
+      int leftIndex = beg;
+      int rightIndex = end;
+
+      while (leftIndex <= rightIndex) {
+        while (arr[i].compareTo(pivot) < 0)
+          leftIndex++;
+
+        while (arr[j].compareTo(pivot) > 0)
+          rightIndex--;
+
+        if (leftIndex <= rightIndex) {
+          swap(arr, leftIndex, rightIndex);
+          leftIndex++;
+          rightIndex--;
+        }
+      }
+
+      if (leftIndex < end)
+        quickSort(arr, leftIndex, end);
+      if (beg < rightIndex)
+        quickSort(arr, beg, rightIndex);
+    }
+  }
+
+  private static void swap(Comparable[] arr, int i, int j) {
+    Comparable tmp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = tmp;
+  }
   public static void heapSort(Comparable[] arr) {
 
   }
