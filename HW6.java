@@ -90,8 +90,35 @@ public class Sort {
     arr[i] = arr[j];
     arr[j] = tmp;
   }
-  public static void heapSort(Comparable[] arr) {
 
+  public static void heapSort(Comparable[] arr) {
+    int n = arr.length;
+    if (n <= 1)
+      return;
+
+    for (int i = n/2 - 1; i >= 0; i--)
+      heapify(arr, n, i);
+
+    for (int i = n-1; i > 0; i--) {
+      swap(arr, 0, i);
+      heapify(arr, i, 0);
+    }
+  }
+
+  private static void heapify(Comparable arr, int n, int i) {
+    int left = 2 * i + 1;
+    int right = 2 * i + 2;
+    int max = i;
+
+    if (left < n && arr[left].compareTo(arr[max]) > 0)
+      max = left;
+    if (right < n && arr[right].compareTo(arr[max]) > 0)
+      max = right;
+
+    if (max != i) {
+      swap (arr, i, max);
+      heapify(arr, n, max);
+    }
   }
 
   public static void main(String[] args) {
@@ -173,4 +200,22 @@ private static List<Set<int>> findAllSubsets(Set<int> input, int targetSize,
   findAllSubsets(input, targetSize, index+1, results, currentSet.clone());
 }
 
-#4
+/* #4 - Given an 9 × 9 board with some squares already filled with hint
+values, the objective of the Sudoku problem is to fill all the empty
+squares with values in 1..9, such that each row, each column, and each
+of the 9 blocks are filled with distinct values. Write a program in C++
+or Java that solves the following Sudoku instance:
+A = {{5,3,_,_,7,_,_,_,_},
+     {6,_,_,1,9,5,_,_,_},
+     {_,9,8,_,_,_,_,6,_},
+     {8,_,_,_,6,_,_,_,3},
+     {4,_,_,8,_,3,_,_,1},
+     {7,_,_,_,2,_,_,_,6},
+     {_,_,_,_,_,_,_,_,_},
+     {_,_,_,_,_,_,_,_,_},
+     {_,_,_,_,_,_,_,_,_}}
+*/
+
+public static void solveSudoku(int[][] board) {
+
+}
