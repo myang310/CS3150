@@ -1,3 +1,5 @@
+// Ming Yang
+
 /* #1 - Implement in C++ and Java three sorting algorithms, including
 the merge-sort and quick-sort algorithms, and compare the implementations
 on CPU time using three different inputs. */
@@ -150,16 +152,18 @@ programming to speed-up the function. */
 // Bottom up DP solution
 public static int numWords(int n) {
   int memo = new int[n];
-  memo[0] = 1;
-  memo[1] = 2;
-  memo[2] = 3;
+  memo[0] = 1; {}
+  memo[1] = 2; {a} {b}
+  memo[2] = 3; {ab} {bb} {ba}
+  memo[3] = 5; {aba} {abb} {bba} {bbb} {bab}
+  memo[4] = 8; {abab} {abba} {abbb} {bbab} {bbba} {bbbb} {baba} {babb}
 
   if (n <= 2)
     return memo[n];
 
   for (int i = 3; i < n; i++) {
     // memo[i-1] has memo[i-3] strings ending in 'a' and memo[i-2]
-    // strings ending in 'b'; there is only one way to continue with
+    // strings ending in 'b'; there is only ONE way to continue with
     // an 'a' as the last char and TWO ways to continue with a 'b'
     // as the last char
     memo[i] = memo[i-3] + (2 * memo[i-2]);
@@ -216,6 +220,83 @@ A = {{5,3,_,_,7,_,_,_,_},
      {_,_,_,_,_,_,_,_,_}}
 */
 
-public static void solveSudoku(int[][] board) {
+public class Sudoku {
+    public static final int SUDOKU_SIZE = 9;
+    public static final int SQUARE_SIZE = 3;
+    public static final int EMPTY = 0;
 
+    public static void solveSudoku(int[][] board) {
+        int x = 0;
+        int y = 0;
+
+        // Fixed array labels which squares are part of the initial setting
+        boolean[][] fixed = new boolean[SUDOKU_SIZE][SUDOKU_SIZE];
+        for (int row = 0; row < SUDOKU_SIZE; row++)
+            for int col = 0; col < SUDOKU_SIZE; col++)
+                if (board[row][col] != EMPTY)
+                    fixed[row][col] = true;
+
+        while (fixed[x][y]) {
+            x++;
+            if (x >= SUDOKU_SIZE) {
+                x = 0;
+                y++;
+            }
+        }
+
+        // Try all the possible numbers
+        for (int i = 1; i <= SUDOKU_SIZE; i++) {
+            solve(array, fixed, x, y, i);
+        }
+    }
+
+    private static void solve(int[][] board, boolean[][] fixed, int x, int y, int value) {
+        if (!checkConsistency(board, x, y, value)) return; //the solution is not consistent
+        board[x][y] = value;
+
+        // Skip through the next few fixed squares
+        do {
+            x++;
+            if (x >= SUDOKU_SIZE) {
+                x = 0;
+                y++;
+                // You've reached (9,0) which signifys the end
+                if (y == SUDOKU_SIZE)
+                    return;
+            }
+        } while (fixed[y][x]);
+
+        // Try all possible numbers for this new square
+        for (int i = 1; i <= SUDOKU_SIZE; i++) {
+            solve(array, fixed, x, y, i);
+        }
+
+        // All possibilities failed; we will backtrack to the previous square
+        // and make this square EMPTY again
+        board[x][y] = EMPTY;
+    }
+
+    private static boolean checkConsistency(int[][] board, int x, int y, int value) {
+        // Check the row for duplicates
+        for (int row = 0; row < SUDOKU_SIZE; row++) {
+            if (row != x && board[row][y] == value) return false;
+        }
+        // Check the column for duplicates
+        for (int col = 0; col < SUDOKU_SIZE; col++) {
+            if (col != y && board[x][col] == value) return false;
+        }
+
+        // Check the 3x3 grid for duplicates
+        int vertical = x/SQUARE_SIZE; //vertical row index
+        int horizontal = y/SQUARE_SIZE; //horizontal row index
+
+        for (int row = vertical*SQUARE_SIZE; row < vertical*SQUARE_SIZE + SQUARE_SIZE; row++) {
+            for (int col = horizontal*SQUARE_SIZE; col < horizontal*SQUARE_SIZE + SQUARE_SIZE; col++) {
+                if (array[row][col] == value) return false;
+            }
+        }
+
+        // No duplicates so return true (consistent)
+        return true;
+    }
 }
